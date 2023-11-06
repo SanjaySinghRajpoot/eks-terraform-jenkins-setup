@@ -53,7 +53,7 @@ module "sg" {
     },
   ]
 
-  egress_with_cidr_block = [
+  egress_with_cidr_blocks = [
     {
       from_port = 0
       to_port = 0
@@ -72,3 +72,24 @@ module "sg" {
 
 
 # EC2
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+
+  name = "jenkins-ec2-instance"
+
+  instance_type          = var.instance_type
+
+  ## need to add the key_name here 45:00 
+  key_name               = "user1"
+  monitoring             = true
+  vpc_security_group_ids = [module.sg.security_group_id]
+  subnet_id              = module.vpc.public_subnets[0]
+  associate_public_ip_address = true
+  user_data = file("jenkins-install.sh")
+  availability_zone = data.aws_availability_zones.azs.names[0]
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
