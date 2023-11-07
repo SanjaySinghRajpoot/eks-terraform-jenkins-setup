@@ -31,7 +31,7 @@ module "sg" {
   source = "terraform-aws-modules/security-group/aws"
 
   name        = "jenkins-sg"
-  description = ""
+  description = "sg for jenkins"
   vpc_id      = module.vpc.vpc_id
 
   # ingress_cidr_blocks      = ["10.10.0.0/16"]
@@ -80,7 +80,7 @@ module "ec2_instance" {
   instance_type          = var.instance_type
 
   ## need to add the key_name here 45:00 
-  key_name               = "user1"
+  key_name               = "jenkins-ec2"
   monitoring             = true
   vpc_security_group_ids = [module.sg.security_group_id]
   subnet_id              = module.vpc.public_subnets[0]
